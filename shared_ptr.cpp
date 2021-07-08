@@ -74,7 +74,8 @@ class shared_point
                 reset(ptr);
 
                 this->ptr = tmp.ptr;
-                tmp.ptr = nullptr;
+                this->count_ptr = tmp.count_ptr;
+                tmp.ptr = tmp.count_ptr = nullptr;
                 return this;
             }
 
