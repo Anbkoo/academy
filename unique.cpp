@@ -6,7 +6,7 @@ class unq_point
     {
     public:
         unq_point() : ptr(nullptr) {};
-        unq_point(T& t) :ptr(t) {};
+        explicit unq_point(T& t) :ptr(t) {};
 
         ~unq_point() 
             {
@@ -42,10 +42,14 @@ class unq_point
                 return result;
             }
 
-        void reset()
+        void reset(T* t) noexcept
             {
-                T* tmp = release();
-                delete tmp;
+                delete t;
+            }
+
+        T* operator->() const noexcept
+            {
+                return &ptr;
             }
     private:
         T* ptr = nullptr;
@@ -53,15 +57,17 @@ class unq_point
 
 class A 
     {
-
+    public:
+        int data;
     };
 
 int main() 
 {
     unq_point<A> _temp1;
     unq_point<A> _temp = std::move(_temp1);
+    _temp.reset(nullptr);
+    _temp->data;
 
-    //unq_point<A> _temp = _temp1;
     std::cin.get();
     return 0;
 }
