@@ -15,16 +15,11 @@ public:
         {
         if (weak_count)
             {
-            --weak_count->count_shared;
-            if (!weak_count->count_shared)
+            --weak_count->count_weak;
+            if (!weak_count->count_shared && !weak_count->count_weak)
                 {
-                delete ptr;
-                ptr = nullptr;
-                if (!weak_count->count_weak)
-                    {
-                    delete weak_count;
-                    weak_count = nullptr;
-                    }
+                delete weak_count;
+                weak_count = nullptr;
                 }
             }
         }
