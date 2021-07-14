@@ -7,4 +7,6 @@ class IPlugin
 		IPlugin() = default;
 		virtual const char* GetName() const = 0;
 		virtual ~IPlugin() = default;
+
+		virtual void Destroy() = 0;
 	};

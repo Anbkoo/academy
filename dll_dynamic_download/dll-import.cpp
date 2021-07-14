@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 		auto* plugin = func();
 		std::cout << plugin->GetName() << std::endl;
 
-		delete plugin;
+		plugin->Destroy();
 		plugin = nullptr;
 		}
 
