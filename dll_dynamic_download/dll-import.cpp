@@ -13,9 +13,9 @@ int main(int argc, char* argv[])
 	constexpr auto func_name = "create_plugin";
 	for (auto& p : fs::directory_iterator(argv[1]))
 		{
-		Lib_Download* a = new Lib_Download(p);
-		auto func = a->Load_Function(func_name);
-		if (!a->check_function(func))
+		Lib_Download a(p);
+		auto func = a.Load_Function(func_name);
+		if (!a.check_function(func))
 			{
 			continue;
 			}
