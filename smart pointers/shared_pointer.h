@@ -99,3 +99,9 @@ class shared_pointer
         T* ptr;
         count_pointer* count_ptr;
     };
+
+template<class T, class... Args >
+shared_pointer<T> make_shared(Args&&... args)
+    {
+    return shared_pointer<T>(new T(std::forward<Args>(args)...));
+    }
