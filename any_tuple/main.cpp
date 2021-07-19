@@ -9,14 +9,12 @@
 void test_tuple()
     {
 
-    tuple<> b;
-    tuple<int, double, std::string> c(3, 4., "Lisa Simpson");
-
+    tuple<> a;
+    tuple<int, int, int, double, std::string> c(3, 4, 5, 4., "Lisa Simpson");
     auto t = make_tuple(10, 2);
-    //int a, d;
-    //tie(a, d) = std::make_tuple(10, 2);
-    //std::cout << get<1>(c);
-    //auto t = make_tuple(10, 2.);
+    int b = 0, d = 0, e = 0;
+    tie(b, d, e) = make_tuple(10, 2, 3);
+    std::cout << get<4>(c);
 
     }
 
