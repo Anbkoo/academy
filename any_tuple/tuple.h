@@ -8,67 +8,42 @@ template<typename T, typename... Args>
 class tuple<T, Args...>
 	{
 	public:
-		tuple(const T& _t, Args... _args) : t(_t), args{ _args... }{};
+		template <std::size_t i>
+		friend class get_index;
 
-		constexpr tuple<Args...>& get_rest() & noexcept 
-			{
-			return (*this).args;
-			}
-		
-		constexpr tuple<Args...>&& get_rest() && noexcept 
-			{
-			return std::move((*this).args);
-			}
+		friend class tuple<T&, Args&...>;
+		friend class tuple<Args&...>;;
 
+		tuple(const T& _t, const Args&... _args) : t(_t), args{ _args... }{};
+		tuple(const tuple<T, Args...>&) = default;
+		tuple(tuple<T, Args...>&&) = default;
+
+		// copy
 		template < class... _Args>
-		constexpr tuple & operator=(tuple<_Args...>&rhs) noexcept
-		{
-			t = rhs.t;
-			get_rest() = rhs.get_rest();
-			return *this;
-		}
-
-		template <class... _Args>
-		constexpr tuple& operator=(tuple<_Args...>&& rhs) noexcept
+		constexpr tuple & operator=(const tuple<_Args...>&rhs)
 			{
-			t = std::move(rhs.t);
-			get_rest() = std::move(rhs).get_rest();
+			t = rhs.t;
+			args = rhs.args;
 			return *this;
 			}
 
-		
+		// move
+		template <class... _Args>
+		constexpr tuple& operator=(tuple<_Args...>&& rhs)
+			{
+			t = rhs.t;
+			args = rhs.args;
+			return *this;
+			}
+
+
+	private:
 		T t;
-		tuple<Args...> args;
+		[[no_unique_address]] tuple<Args...> args;
 	};
 
 template <>
 class tuple<> {};
-
-template<typename T>
-class tuple<T>
-	{
-	public:
-		tuple() = default;
-		explicit tuple(const T& _t) : t(_t) {}
-
-		template <typename U>
-		constexpr tuple& operator=(tuple<U>&& rhs) noexcept
-			{
-			t = std::move(rhs.t);
-			return *this;
-			}
-
-		template <typename U>
-		constexpr tuple& operator=(const tuple<U>& rhs) noexcept
-			{
-			t = std::move(rhs.t);
-			return *this;
-			}
-
-		T t;
-	};
-
-
 
 template <std::size_t i>
 class get_index
@@ -76,9 +51,9 @@ class get_index
 	public:
 
 	template<typename T, typename... Args>
-	static auto get_ind(tuple<T, Args...>* t)
+	static auto get_ind(tuple<T, Args...>& t)
 		{
-		return get_index<i - 1>::get_ind(&t->args);
+		return get_index<i - 1>::get_ind(t.args);
 		}
 	};
 
@@ -88,16 +63,16 @@ class get_index<0>
 	{
 	public:
 		template<typename T, typename... Args>
-		static auto get_ind(tuple<T, Args...>* t)
+		static auto get_ind(tuple<T, Args...>& t)
 			{
-			return t->t;
+			return t.t;
 			}
 	};
 
 template <std::size_t i, template <typename... Args> typename tuple, typename... Args>
 auto get(tuple<Args...>& t)
 	{
-	return get_index<i>::get_ind(&t);
+	return get_index<i>::get_ind(t);
 	}
 
 template<class... Args >
@@ -112,4 +87,3 @@ constexpr tuple<Args&...> tie(Args&... args) noexcept
 	{
 	return tuple<Args&...>(args...);
 	}
-

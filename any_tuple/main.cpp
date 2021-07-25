@@ -1,10 +1,10 @@
 #include <iostream>
 #include "tuple.h"
 #include "any.h"
-#include <tuple>
-#include <vector>
 #include <string>
 #include <utility> 
+#include <any> 
+#include <tuple> 
 
 void test_tuple()
     {
@@ -15,11 +15,20 @@ void test_tuple()
     int b = 0, d = 0, e = 0;
     tie(b, d, e) = make_tuple(10, 2, 3);
     std::cout << get<4>(c);
-
     }
 
 void test_any()
     {
+    any b = 1.5;
+    any c = 1.2;
+    c = b;
+    std::cout << c.type().name() << ": " << any_cast<double>(c) << '\n';
+    std::cout << b.type().name() << ": " << any_cast<double>(b) << '\n';
+
+    b = 3;
+    c = std::move(b);
+    std::cout << c.type().name() << ": " << any_cast<int>(c) << '\n';
+
     any a = 1;
     std::cout << a.type().name() << ": " << any_cast<int>(a) << '\n';
 
@@ -56,7 +65,7 @@ void test_any()
 
 int main()
 	{
-    //test_any();
+    test_any();
     test_tuple();
     std::cin.get();
 	}
