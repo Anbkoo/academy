@@ -31,8 +31,8 @@ class tuple<T, Args...>
 		template <class... _Args>
 		constexpr tuple& operator=(tuple<_Args...>&& rhs)
 			{
-			t = rhs.t;
-			args = rhs.args;
+			t = std::move(rhs.t);
+			args = std::move(rhs.args);
 			return *this;
 			}
 
@@ -51,7 +51,7 @@ class get_index
 	public:
 
 	template<typename T, typename... Args>
-	static auto get_ind(tuple<T, Args...>& t)
+	static auto get_ind(const tuple<T, Args...>& t)
 		{
 		return get_index<i - 1>::get_ind(t.args);
 		}
@@ -63,14 +63,14 @@ class get_index<0>
 	{
 	public:
 		template<typename T, typename... Args>
-		static auto get_ind(tuple<T, Args...>& t)
+		static auto get_ind(const tuple<T, Args...>& t)
 			{
 			return t.t;
 			}
 	};
 
 template <std::size_t i, template <typename... Args> typename tuple, typename... Args>
-auto get(tuple<Args...>& t)
+auto get(const tuple<Args...>& t)
 	{
 	return get_index<i>::get_ind(t);
 	}
