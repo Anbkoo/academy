@@ -14,7 +14,9 @@ class tuple<T, Args...>
 		friend class tuple<T&, Args&...>;
 		friend class tuple<Args&...>;;
 
-		tuple(const T& _t, const Args&... _args) : t(_t), args{ _args... }{};
+		template<typename _T, typename... _Args>
+		tuple(_T&& _t, _Args&&... _args) : t(std::forward<_T>(_t)), args{ std::forward<_Args>(_args)... }{};
+
 		tuple(const tuple<T, Args...>&) = default;
 		tuple(tuple<T, Args...>&&) = default;
 
@@ -69,7 +71,7 @@ class get_index<0>
 			}
 	};
 
-template <std::size_t i, template <typename... Args> typename tuple, typename... Args>
+template <std::size_t i, typename... Args>
 auto get(const tuple<Args...>& t)
 	{
 	return get_index<i>::get_ind(t);

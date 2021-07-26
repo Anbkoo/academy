@@ -83,6 +83,9 @@ template<typename ValueType,
 	>>
 any& any::operator=(ValueType&& rhs)
 	{
+	if (has_value())
+		reset();
+
 	type_data = &typeid(rhs);
 	data = new ValueType(std::forward<ValueType>(rhs));
 	return *this;
