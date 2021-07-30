@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+	<Type Name="list&lt;*&gt;">
+		<DisplayString Condition="size_of_list == 0">empty</DisplayString>
+		<DisplayString>{{ size = {size_of_list}, view = {view} }}</DisplayString>
+		<Expand HideRawView="true">
+			<Item Name="[size]" ExcludeView="simple" Condition="!view">size_of_list</Item>
+			<LinkedListItems Condition="view">
+				<HeadPointer>head</HeadPointer>
+				<NextPointer>next</NextPointer>
+				<ValueNode>data</ValueNode>
+			</LinkedListItems>
+			<Synthetic Name="HINT" Condition="!view">
+				<DisplayString>List node can be viewed if view == true</DisplayString>
+			</Synthetic>
+		</Expand>
+	</Type>
+</AutoVisualizer>
