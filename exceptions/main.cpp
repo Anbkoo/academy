@@ -42,13 +42,13 @@ int main()
             const auto result = reader.ReadNextNumber(number);
             try {
                 if (result == NumberLinesReader::ReadResult::NotANumber)
-                    throw;
+                    throw ("not a number found");
 
                 sum += number;
                 }
-            catch (...)
+            catch (std::exception const& e)
                 {
-                std::cerr << "not a number found" << std::endl;
+                std::cerr << e.what() << std::endl;
                 reader.~NumberLinesReader();
                 return EXIT_FAILURE;
                 }
@@ -56,7 +56,7 @@ int main()
         }
     catch (std::exception const& e)
         {
-        std::cerr << "could not open file" << std::endl;
+        std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;
         }
 
