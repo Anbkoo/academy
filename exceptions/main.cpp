@@ -13,7 +13,7 @@ public:
     };
     void Open(const std::string& fileName) 
         {
-        Stream.open("test.txt");
+        Stream.open(fileName);
         Stream.exceptions(std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit);
         };
     ReadResult ReadNextNumber(int& number) 
@@ -28,6 +28,7 @@ public:
 private:
     std::ifstream Stream;
 };
+
 int main()
 {
     NumberLinesReader reader;
@@ -48,7 +49,8 @@ int main()
             catch (...)
                 {
                 std::cerr << "not a number found" << std::endl;
-                break;
+                reader.~NumberLinesReader();
+                return EXIT_FAILURE;
                 }
             }
         }
