@@ -1,26 +1,15 @@
 #include <iostream>
 #include <fstream>
+#include <optional>
 #include <string>
 
 class NumberLinesReader
 {
 public:
-    enum class ReadResult
-    {
-        OK,
-        EndOfFile,
-        NotANumber
-    };
-    void Open(const std::string& fileName) 
-        {
-        Stream.open(fileName);
-        Stream.exceptions(std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit);
-        };
-    ReadResult ReadNextNumber(int& number) 
-        {
-        return ReadResult::OK;
-        };
-
+    NumberLinesReader(const std::string& fileName);
+    struct NotANumber;
+    struct FileOpeningFailer;
+    std::optional<int> ReadNextNumber();
     ~NumberLinesReader()
         {
         Stream.close();
@@ -32,34 +21,30 @@ private:
 int main()
 {
     NumberLinesReader reader;
-    int sum = 0;
     try 
         {
         reader.Open("numbers.txt");
-        int number = 0;
-        while (true)
+        int sum = 0;
+        while (const auto result = reader.ReadNextNumber())
             {
-            const auto result = reader.ReadNextNumber(number);
-            try {
-                if (result == NumberLinesReader::ReadResult::NotANumber)
-                    throw ("not a number found");
-
-                sum += number;
-                }
-            catch (std::exception const& e)
-                {
-                std::cerr << e.what() << std::endl;
-                reader.~NumberLinesReader();
-                return EXIT_FAILURE;
-                }
+            sum += result.value();
+            }
+            std::cout << "sum = " << sum << std::endl;
+            
             }
         }
     catch (std::exception const& e)
         {
-        std::cerr << e.what() << std::endl;
+        std::cerr << "couldn't open file" << std::endl;
         return EXIT_FAILURE;
         }
 
-   std::cout<< "sum = " << sum << std::endl;
+    catch (std::exception const& e)
+        {
+        std::cerr << "not a number found" << std::endl;
+        return EXIT_FAILURE;
+        }
+
+   
    return EXIT_SUCCESS;
 }
