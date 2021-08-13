@@ -1,3 +1,12 @@
+// parallel_accumulate_func is faster if cache not near ->
+// -> (because two process can have access to one cache line) ->
+// -> add local variable as sum
+// 
+// than parallel_accumulate_cycle is slower than parallel_accumulate_func ->
+// -> but more easier to implement
+//
+// sequen exec slow because uses only one process
+
 #include <iostream>
 #include <chrono>
 #include <thread>
